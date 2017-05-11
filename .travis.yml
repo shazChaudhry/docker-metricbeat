@@ -1,0 +1,33 @@
+sudo: required
+env:
+  - METRICBEAT_VERSION=5.x
+before_install:
+  # Install latest version docker engine
+  - sudo apt-get update
+  - sudo apt-get -y -o Dpkg::Options::="--force-confnew" install docker-engine
+  - docker version
+  # Install latest version of docker-compose
+  #- sudo apt-get update -qq
+  #- sudo apt-get install -qq python-pip && pip install --upgrade pip
+  #- sudo pip install docker-compose
+  #- docker-compose version
+  # https://www.elastic.co/guide/en/elasticsearch/reference/5.0/vm-max-map-count.html
+services:
+  - docker
+
+before_script:
+  - docker build --rm --no-cache --build-arg METRICBEAT_VERSION=${METRICBEAT_VERSION} --tag quay.io/shazchaudhry/docker-metricbeat:${METRICBEAT_VERSION} .
+
+script:
+  - docker run -d --rm --name filebeat --volume metricmeat_data:/var/lib/metricmeat --env HOST=node1 --env PORT=9200 --env PROTOCOL=http --env USERNAME=elastic --env PASSWORD=changeme quay.io/shazchaudhry/docker-metricbeat:${METRICBEAT_VERSION}
+  - sleep 120
+  - docker image ls
+  - docker ps -a
+  #List all Elasticsearch Indices. One entry sould be for metricbeat
+  - curl -XGET -u elastic:changeme '127.0.0.1:9200/_cat/indices?v&pretty'
+
+after_script:
+  - docker login -u="shazchaudhry" -p=${QUAY_PASSWORD} quay.io
+  - docker push quay.io/shazchaudhry/docker-metricbeat:${METRICBEAT_VERSION}
+  - docker tag quay.io/shazchaudhry/docker-metricbeat:${METRICBEAT_VERSION} quay.io/shazchaudhry/docker-metricbeat:latest
+  - docker push quay.io/shazchaudhry/docker-metricbeat:latest
