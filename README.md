@@ -1,9 +1,8 @@
-**WORK IN PROGRESS**
-
 [![Build Status on Travis](https://travis-ci.org/shazChaudhry/docker-metricbeat.svg?branch=master)](https://travis-ci.org/shazChaudhry/docker-metricbeat "Build Status on Travis")
 [![Docker Repository on Quay](https://quay.io/repository/shazchaudhry/docker-metricbeat/status "Docker Repository on Quay")](https://quay.io/repository/shazchaudhry/docker-metricbeat)
 
 **User story**
+* As a member of DevOps team I want collect and ship metrics (from CPU to memory) to Elasticsearch or Logstash so that I can visualize stats in Kibana.
 
 **Assumptions**
 * Your infrastructure is required to be based on ubuntu/xenial64
@@ -30,7 +29,7 @@ docker run -d --rm \
   --name filebeat \
   --volume metricmeat_data:/var/lib/metricmeat \
   --volume /var/run/docker.sock:/var/run/docker.sock \
-  --env HOST=node1 \
+  --env HOST=127.0.0.1 \
   --env PORT=9200 \
   --env PROTOCOL=http \
   --env USERNAME=elastic \
@@ -38,9 +37,12 @@ docker run -d --rm \
 quay.io/shazchaudhry/docker-metricbeat
 ```
 
-If not already available in Kibana, create an index called "metricmeat-*".
-
 **Test**
+* Running the following command should produce elasticsearch index and one of the rows should have _metricbeat-*_:
+```
+curl -XGET -u elastic:changeme '127.0.0.1:9200/_cat/indices?v&pretty'
+```
+* If not already available in Kibana, create an index called "metricmeat-*".
 
 **Metricbeat overview, docs and FAQ**
 
