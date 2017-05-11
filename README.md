@@ -5,12 +5,11 @@
 * As a member of DevOps team I want collect and ship metrics (from CPU to memory) to Elasticsearch or Logstash so that I can visualize stats in Kibana.
 
 **Assumptions**
-* Your infrastructure is required to be based on ubuntu/xenial64
 * Your infrastructure is required to have [Docker Swarm cluster](https://docs.docker.com/get-started/part4/#understanding-swarm-clusters) configuration
 
 **Prerequisite**
-* Set up a development infrastructre by following [Infra as Code](https://github.com/shazChaudhry/infra) repo on github
-* Setup Elastic Stack by following [this](https://github.com/shazChaudhry/logging) github repo
+* Set up a development infrastructre by following [Infra as Code](https://github.com/shazChaudhry/infra) repo on github _(Optional as you might have your own infra already created)_
+* Setup Elastic Stack by following [this](https://github.com/shazChaudhry/logging) github repo _(Optional as you might have your own services already created)_
 
 **Requirements**
 * Ensure Elasticsearch, (_Logstash optional_) and Kibana are up and running
@@ -29,7 +28,7 @@ docker run -d --rm \
   --name filebeat \
   --volume metricmeat_data:/var/lib/metricmeat \
   --volume /var/run/docker.sock:/var/run/docker.sock \
-  --env HOST=127.0.0.1 \
+  --env HOST=<HOSTNAME> \
   --env PORT=9200 \
   --env PROTOCOL=http \
   --env USERNAME=elastic \
