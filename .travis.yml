@@ -23,7 +23,7 @@ script:
   - docker network create -d bridge metricbeatSDN
   - docker run -d --rm --name elasticsearch --network=metricbeatSDN --publish 9200:9200 docker.elastic.co/elasticsearch/elasticsearch:5.4.0
   - sleep 120
-  - docker run -d --rm --name filebeat --network=metricbeatSDN --volume metricmeat_data:/var/lib/metricmeat --env HOST=node1 --env PORT=9200 --env PROTOCOL=http --env USERNAME=elastic --env PASSWORD=changeme quay.io/shazchaudhry/docker-metricbeat:${METRICBEAT_VERSION}
+  - docker run -d --rm --name metricbeat --network=metricbeatSDN --volume metricmeat_data:/var/lib/metricmeat --env HOST=node1 --env PORT=9200 --env PROTOCOL=http --env USERNAME=elastic --env PASSWORD=changeme quay.io/shazchaudhry/docker-metricbeat:${METRICBEAT_VERSION}
   - docker network inspect metricbeatSDN
   - docker image ls
   - sleep 60
