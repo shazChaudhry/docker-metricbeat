@@ -4,7 +4,7 @@ ARG METRICBEAT_VERSION=5.x
 
 RUN set -x && \
   apt-get update && \
-  apt-get install -y wget gnupg  && \
+  apt-get install -y wget  && \
   wget -qO - https://artifacts.elastic.co/GPG-KEY-elasticsearch | apt-key add - && \
   apt-get install -y apt-transport-https && \
   echo "deb https://artifacts.elastic.co/packages/${METRICBEAT_VERSION}/apt stable main" | tee -a /etc/apt/sources.list.d/elastic-${METRICBEAT_VERSION}.list && \
