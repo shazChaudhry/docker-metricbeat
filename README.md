@@ -16,7 +16,7 @@
 
 Build metricmeat image ensurinig that config/metricmeat.yml is configured as appropriate for your system or as per your requirements:
 ```
-export METRICBEAT_VERSION=5.x
+export METRICBEAT_VERSION=5.4
 docker build \
   --rm --no-cache \
   --build-arg METRICBEAT_VERSION=${METRICBEAT_VERSION} \
@@ -25,8 +25,8 @@ docker build \
 Start the container that will forward metricmeat to Elastic search:
 ```
 docker run -d --rm \
-  --name filebeat \
-  --volume metricmeat_data:/var/lib/metricmeat \
+  --name metricbeat \
+  --volume metricmeat_data:/var/lib/metricbeat \
   --volume /var/run/docker.sock:/var/run/docker.sock \
   --env HOST=<HOSTNAME> \
   --env PORT=9200 \
