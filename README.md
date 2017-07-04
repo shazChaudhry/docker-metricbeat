@@ -16,7 +16,7 @@
 
 Build metricmeat image ensurinig that config/metricmeat.yml is configured as appropriate for your system or as per your requirements:
 ```
-export METRICBEAT_VERSION=5.4
+export METRICBEAT_VERSION=5.x
 docker build \
   --rm --no-cache \
   --build-arg METRICBEAT_VERSION=${METRICBEAT_VERSION} \
