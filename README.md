@@ -2,33 +2,34 @@
 [![Docker Repository on Quay](https://quay.io/repository/shazchaudhry/docker-metricbeat/status "Docker Repository on Quay")](https://quay.io/repository/shazchaudhry/docker-metricbeat)
 
 **User story**
-* As a member of DevOps team I want collect and ship metrics (from CPU to memory) to Elasticsearch or Logstash so that I can visualize stats in Kibana.
-
-**Assumptions**
-* Your infrastructure is required to have [Docker Swarm cluster](https://docs.docker.com/get-started/part4/#understanding-swarm-clusters) configuration
+* As a member of DevOps team I want to collect and ship metrics (from CPU to memory) to Elastic stack so that I can visualize stats in Kibana.
 
 **Prerequisite**
-* Set up a development infrastructre by following [Infra as Code](https://github.com/shazChaudhry/infra) repo on github _(Optional as you might have your own infra already created)_
-* Setup Elastic Stack by following [this](https://github.com/shazChaudhry/logging) github repo _(Optional as you might have your own services already created)_
+* Elasticsearch, _(Logstash optional)_ and Kibana are up and running
+* Elasticsearch port 9200 is open for filebeat to send logs to
+* Latest version of Docker is installed (this metricbeat image has been tested on Docker 17.06.0-ce)
 
-**Requirements**
-* Ensure Elasticsearch, (_Logstash optional_) and Kibana are up and running
 
-Build metricmeat image ensurinig that config/metricmeat.yml is configured as appropriate for your system or as per your requirements:
+**System-Level Monitoring**<br>
+Deploy Metricbeat on all your   hosts, connect it to Elasticsearch and voila: you get system-level CPU usage, memory, file system, disk IO, and network IO statistics, as well as top-like statistics for every process running on your systems.
+
+Build metricmeat image ensuring that config/metricmeat.yml is configured as appropriate for your system or as per your requirements:
 ```
-export METRICBEAT_VERSION=5.x
-docker build \
+docker image build \
   --rm --no-cache \
-  --build-arg METRICBEAT_VERSION=${METRICBEAT_VERSION} \
   --tag quay.io/shazchaudhry/docker-metricbeat .
 ```
-Start the container that will forward metricmeat to Elastic search:
+Start the container that will forward metricbeat to Elasticsearch:
 ```
-docker run -d --rm \
+docker container run -d --rm \
   --name metricbeat \
-  --volume metricmeat_data:/var/lib/metricbeat \
+  --volume metricmeat_data:/usr/share/metricbeat/data \
   --volume /var/run/docker.sock:/var/run/docker.sock \
-  --env HOST=<HOSTNAME> \
+  --volume=/proc:/hostfs/proc:ro \
+  --volume=/sys/fs/cgroup:/hostfs/sys/fs/cgroup:ro \
+  --volume=/:/hostfs:ro \
+  --net=host \
+  --env HOST=node1 \
   --env PORT=9200 \
   --env PROTOCOL=http \
   --env USERNAME=elastic \
@@ -40,6 +41,7 @@ quay.io/shazchaudhry/docker-metricbeat
 * Running the following command should produce elasticsearch index and one of the rows should have _metricbeat-*_:
 ```
 curl -XGET -u elastic:changeme '127.0.0.1:9200/_cat/indices?v&pretty'
+curl -XGET -u elastic:changeme '127.0.0.1:9200/metricbeat-*/_search?pretty'
 ```
 * If not already available in Kibana, create an index called "metricmeat-*".
 
