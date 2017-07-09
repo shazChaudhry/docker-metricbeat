@@ -24,7 +24,6 @@ Start the container that will forward metricbeat to Elasticsearch:
 docker container run -d --rm \
   --name metricbeat \
   --volume metricmeat_data:/usr/share/metricbeat/data \
-  --volume /var/run/docker.sock:/var/run/docker.sock \
   --volume=/proc:/hostfs/proc:ro \
   --volume=/sys/fs/cgroup:/hostfs/sys/fs/cgroup:ro \
   --volume=/:/hostfs:ro \
