@@ -28,7 +28,7 @@ docker container run -d --rm \
   --volume=/proc:/hostfs/proc:ro \
   --volume=/sys/fs/cgroup:/hostfs/sys/fs/cgroup:ro \
   --volume=/:/hostfs:ro \
-  --net=host \
+  --network=host \
   --env HOST=node1 \
   --env PORT=9200 \
   --env PROTOCOL=http \
