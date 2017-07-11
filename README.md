@@ -6,12 +6,12 @@
 
 **Prerequisite**
 * Elasticsearch, _(Logstash optional)_ and Kibana are up and running
-* Elasticsearch port 9200 is open for filebeat to send logs to
+* Elasticsearch port 9200 is open for metricbeat to send logs to
 * Latest version of Docker is installed (this metricbeat image has been tested on Docker 17.06.0-ce)
 
 
 **System-Level Monitoring**<br>
-Deploy Metricbeat on all your   hosts, connect it to Elasticsearch and voila: you get system-level CPU usage, memory, file system, disk IO, and network IO statistics, as well as top-like statistics for every process running on your systems.
+Deploy Metricbeat on all your hosts, connect it to Elasticsearch and voila: you get system-level CPU usage, memory, file system, disk IO, and network IO statistics, as well as top-like statistics for every process running on your systems.
 
 Build metricmeat image ensuring that config/metricmeat.yml is configured as appropriate for your system or as per your requirements:
 ```
@@ -47,4 +47,3 @@ curl -XGET -u elastic:changeme '127.0.0.1:9200/metricbeat-*/_search?pretty'
 **Metricbeat overview, docs and FAQ**
 
 * [Overview](https://www.elastic.co/guide/en/beats/metricbeat/current/metricbeat-overview.html)
-* [Running Metricbeat in a Container](https://www.elastic.co/guide/en/beats/metricbeat/5.x/running-in-container.html)
