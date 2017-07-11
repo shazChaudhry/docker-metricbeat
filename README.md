@@ -17,7 +17,7 @@ Build metricmeat image ensuring that config/metricmeat.yml is configured as appr
 ```
 docker image build \
   --rm --no-cache \
-  --tag quay.io/shazchaudhry/docker-metricbeat .
+  --tag shazchaudhry/docker-metricbeat .
 ```
 Start the container that will forward metricbeat to Elasticsearch:
 ```
@@ -33,7 +33,7 @@ docker container run -d --rm \
   --env PROTOCOL=http \
   --env USERNAME=elastic \
   --env PASSWORD=changeme \
-quay.io/shazchaudhry/docker-metricbeat
+shazchaudhry/docker-metricbeat
 ```
 
 **Test**
