@@ -46,4 +46,4 @@ curl -XGET -u elastic:changeme '127.0.0.1:9200/metricbeat-*/_search?pretty'
 
 **Metricbeat overview, docs and FAQ**
 
-* [Overview](https://www.elastic.co/guide/en/beats/metricbeat/current/metricbeat-overview.html)
+* [Overview - https://www.elastic.co/guide/en/beats/metricbeat/current/metricbeat-overview.html](https://www.elastic.co/guide/en/beats/metricbeat/current/metricbeat-overview.html)
