@@ -5,7 +5,7 @@
 * As a member of DevOps team, I want to collect and ship metrics (from CPU to memory) to Elastic stack so that I can visualize stats in Kibana.
 
 **Prerequisite**
-* ELK v5.5.0 (Elasticsearch, Logstash and Kibana) is up and running
+* ELK v5.5.1 (Elasticsearch, Logstash and Kibana) is up and running
 * Elasticsearch port is open for metricbeat to send logs to
 * Latest version of Docker is installed (this metricbeat image has been tested on Docker 17.06.0-ce)
 
@@ -23,7 +23,7 @@ Start the container that will forward metricbeat to Elasticsearch:
 ```
 docker container run -d --rm \
   --name metricbeat \
-  --volume metricmeat_data:/usr/share/metricbeat/data \
+  --volume metricbeat_data:/usr/share/metricbeat/data \
   --volume=/proc:/hostfs/proc:ro \
   --volume=/sys/fs/cgroup:/hostfs/sys/fs/cgroup:ro \
   --volume=/:/hostfs:ro \
