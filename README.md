@@ -8,6 +8,7 @@
 * ELK v5.5.1 (Elasticsearch, Logstash and Kibana) is up and running
 * Elasticsearch port is open for metricbeat to send logs to
 * Latest version of Docker is installed (this metricbeat image has been tested on Docker 17.06.0-ce)
+* On each node where metricbeat is to be run, grant explicit access to the Metricbeat user with a filesystem ACL by running `setfacl -m u:1000:rw /var/run/docker.sock` command. Otherwise, docker stats will not be shown.
 
 
 **System-Level Monitoring**<br>
@@ -17,9 +18,9 @@ Before building metricbeat image, please take a look at config/metricbeat.yml to
 ```
 docker image build \
   --rm --no-cache \
-  --tag quay.io/shazchaudhry/docker-metricbeat .
+  --tag quay.io/shazchaudhry/docker-metricbeat:5.5.1 .
 ```
-Start the container that will forward metricbeat to Elasticsearch:
+Start the container that will forward metricbeat stats to Elasticsearch:
 ```
 docker container run -d --rm \
   --name metricbeat \
@@ -27,13 +28,14 @@ docker container run -d --rm \
   --volume=/proc:/hostfs/proc:ro \
   --volume=/sys/fs/cgroup:/hostfs/sys/fs/cgroup:ro \
   --volume=/:/hostfs:ro \
+  --volume=/var/run/docker.sock:/var/run/docker.sock \
   --network=host \
-  --env HOST=<elasticsearch_host> \
-  --env PORT=<elasticsearch_port> \
-  --env PROTOCOL=<http_or_https> \
-  --env USERNAME=<username> \
-  --env PASSWORD=<password> \
-quay.io/shazchaudhry/docker-metricbeat
+  --env HOST=localhost \
+  --env PORT=9200 \
+  --env PROTOCOL=http \
+  --env USERNAME=elastic \
+  --env PASSWORD=changeme \
+quay.io/shazchaudhry/docker-metricbeat:5.5.1 metricbeat -e -system.hostfs=/hostfs
 ```
 
 **Test**
