@@ -8,8 +8,7 @@
 * ELK v5.6.1 (Elasticsearch, Logstash and Kibana) is up and running
 * Elasticsearch port is open for metricbeat to send logs to
 * Latest version of Docker is installed
-* On each node where metricbeat is to be run, grant explicit access to the Metricbeat user with a filesystem ACL by running `sudo setfacl -m u:1000:rw /var/run/docker.sock` command. Otherwise, docker stats will not be shown. If the previous command does not work (AWS for docker CE, Alpine based EC2 instances) then try `sudo chmod 666 /var/run/docker.sock`.
-
+* On each node where metricbeat is to be run, grant explicit access to the Metricbeat user with a filesystem ACL by running `sudo setfacl -m u:1000:rw /var/run/docker.sock` command. Otherwise, docker stats will not be shown.
 
 **System-Level Monitoring**<br>
 Deploy Metricbeat on all your hosts, connect it to Elasticsearch and voila: you get system-level CPU usage, memory, file system, disk IO, and network IO statistics, as well as top-like statistics for every process running on your systems.
