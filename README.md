@@ -1,23 +1,23 @@
 [![Build Status on Travis](https://travis-ci.org/shazChaudhry/docker-metricbeat.svg?branch=master)](https://travis-ci.org/shazChaudhry/docker-metricbeat "Build Status on Travis")
 [![Docker Repository on Quay](https://quay.io/repository/shazchaudhry/docker-metricbeat/status "Docker Repository on Quay")](https://quay.io/repository/shazchaudhry/docker-metricbeat)
 
-**User story**
-* As a member of DevOps team, I want to collect and ship metrics (from CPU to memory) to Elastic stack so that I can visualize stats in Kibana.
+#### User story
+As a member of DevOps team, I want to collect and ship metrics (from CPU to memory) to Elastic stack so that I can visualize stats in Kibana.
 
-**Prerequisite**
-* ELK v5.6.1 (Elasticsearch, Logstash and Kibana) is up and running
+#### Prerequisite
+* ELK v5.6.2 (Elasticsearch, Logstash and Kibana) is up and running
 * Elasticsearch port is open for metricbeat to send logs to
 * Latest version of Docker is installed
-* On each node where metricbeat is to be run, grant explicit access to the Metricbeat user with a filesystem ACL by running `sudo setfacl -m u:1000:rw /var/run/docker.sock` command. Otherwise, docker stats will not be shown.
+* On each node where metricbeat is to be run, grant explicit access to the Metricbeat user with a filesystem ACL by running `sudo setfacl -m u:1000:rw /var/run/docker.sock` command. Otherwise, docker stats will not be shown. A workround (if previous command did not work) is to set `sudo chmod 666 /var/run/docker.sock` on all nodes
 
-**System-Level Monitoring**<br>
+#### System-Level Monitoring
 Deploy Metricbeat on all your hosts, connect it to Elasticsearch and voila: you get system-level CPU usage, memory, file system, disk IO, and network IO statistics, as well as top-like statistics for every process running on your systems.
 
 Before building metricbeat image, please take a look at config/metricbeat.yml to ensure it is configured as appropriate for your system or as per your requirements:
 ```
 docker image build \
   --rm --no-cache \
-  --tag quay.io/shazchaudhry/docker-metricbeat:5.6.1 .
+  --tag quay.io/shazchaudhry/docker-metricbeat:5.6.2 .
 ```
 Start the container that will forward metricbeat stats to Elasticsearch:
 ```
@@ -34,10 +34,10 @@ docker container run -d --rm \
   --env PROTOCOL=http \
   --env USERNAME=elastic \
   --env PASSWORD=changeme \
-quay.io/shazchaudhry/docker-metricbeat:5.6.1 metricbeat -e -system.hostfs=/hostfs
+quay.io/shazchaudhry/docker-metricbeat:5.6.2 metricbeat -e -system.hostfs=/hostfs
 ```
 
-**Test**
+#### Test
 * Running the following command should produce elasticsearch index and one of the rows should have _metricbeat-*_:
 ```
 curl -XGET -u elastic:changeme '<elasticsearch_host>:9200/_cat/indices?v&pretty'
