@@ -23,8 +23,8 @@ script:
   - sleep 60
   - docker container ps -a
   #List all Elasticsearch Indices. One entry sould be for metricbeat
-  - curl -XGET -u elastic:changeme '127.0.0.1:9200/_cat/indices?v&pretty'
-  - curl -XGET -u elastic:changeme '127.0.0.1:9200/metricbeat-*/_search?pretty'
+  - curl -XGET -u elastic:MagicWord '127.0.0.1:9200/_cat/indices?v&pretty'
+  - curl -XGET -u elastic:MagicWord '127.0.0.1:9200/metricbeat-*/_search?pretty'
 
 after_script:
   - docker login -u="shazchaudhry" -p=${QUAY_PASSWORD} quay.io
