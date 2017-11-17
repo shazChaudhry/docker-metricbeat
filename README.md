@@ -2,11 +2,18 @@
 [![Docker Repository on Quay](https://quay.io/repository/shazchaudhry/docker-metricbeat/status "Docker Repository on Quay")](https://quay.io/repository/shazchaudhry/docker-metricbeat)
 
 #### User story
-As a member of DevOps team, I want to collect and ship metrics (from CPU to memory) to Elastic stack so that I can visualize stats in Kibana.
+As a member of DevOps team, I want to collect and ship metrics to Elasticsearch so that I can visualize stats in Kibana
+
+The Beats are open source data shippers that you install as agents on your servers to send different types of operational data to Elasticsearch. Beats can send data directly to Elasticsearch or send it to Elasticsearch via Logstash, which you can use to parse and transform the data.
+
+<p align="center">
+  <img src="./pics\beats-platform.png" alt="Beats platform" style="width: 250px;"/>
+</p>
 
 #### Prerequisite
-* ELK v5.6.2 (Elasticsearch, Logstash and Kibana) is up and running
-* Elasticsearch port is open for metricbeat to send logs to
+* Elastic stack v6.0 is up and running
+* Elasticsearch port 9200 is open for metricbeat to send logs to
+* Metricbeat is being installed on the same server as Elasticsearch
 * Latest version of Docker is installed
 * On each node where metricbeat is to be run, grant explicit access to the Metricbeat user with a filesystem ACL by running `sudo setfacl -m u:1000:rw /var/run/docker.sock` command. Otherwise, docker stats will not be shown. A workround (if previous command did not work) is to set `sudo chmod 666 /var/run/docker.sock` on all nodes
 
@@ -17,7 +24,7 @@ Before building metricbeat image, please take a look at config/metricbeat.yml to
 ```
 docker image build \
   --rm --no-cache \
-  --tag quay.io/shazchaudhry/docker-metricbeat:5.6.2 .
+  --tag quay.io/shazchaudhry/docker-metricbeat:6.0.0 .
 ```
 Start the container that will forward metricbeat stats to Elasticsearch:
 ```
@@ -29,19 +36,16 @@ docker container run -d --rm \
   --volume=/:/hostfs:ro \
   --volume=/var/run/docker.sock:/var/run/docker.sock \
   --network=host \
-  --env HOST=localhost \
-  --env PORT=9200 \
-  --env PROTOCOL=http \
   --env USERNAME=elastic \
-  --env PASSWORD=changeme \
-quay.io/shazchaudhry/docker-metricbeat:5.6.2 metricbeat -e -system.hostfs=/hostfs
+  --env PASSWORD=MagicWord \
+quay.io/shazchaudhry/docker-metricbeat:6.0.0 metricbeat -e -system.hostfs=/hostfs -E "output.elasticsearch.hosts=["http://localhost:9200"]"
 ```
 
 #### Test
 * Running the following command should produce elasticsearch index and one of the rows should have _metricbeat-*_:
 ```
-curl -XGET -u elastic:changeme '<elasticsearch_host>:9200/_cat/indices?v&pretty'
-curl -XGET -u elastic:changeme '<elasticsearch_host>:9200/metricbeat-*/_search?pretty'
+curl -XGET -u elastic:MagicWord 'localhost:9200/_cat/indices?v&pretty'
+curl -XGET -u elastic:MagicWord 'localhost:9200/metricbeat-*/_search?pretty'
 ```
 * If not already available in Kibana, create an index called "metricmeat-*".
 
