@@ -1,6 +1,6 @@
 sudo: required
 env:
-  - VERSION=5.6.2
+  - VERSION=6.0.0
 before_install:
   # Install latest version docker engine
   - sudo apt-get update
@@ -15,9 +15,9 @@ before_script:
 
 script:
   - docker network create -d bridge metricbeatSDN
-  - docker container run -d --rm --name elasticsearch --network=metricbeatSDN --publish 9200:9200 docker.elastic.co/elasticsearch/elasticsearch:${VERSION}
+  - docker container run -d --rm --name elasticsearch --network=metricbeatSDN --publish 9200:9200 --publish 9300:9300 -e "discovery.type=single-node" -e ELASTIC_PASSWORD=MagicWord docker.elastic.co/elasticsearch/elasticsearch-platinum:${VERSION}
   - sleep 120
-  - docker container run -d --rm --name metricbeat --volume metricbeat_data:/usr/share/metricbeat/data  --volume=/proc:/hostfs/proc:ro --volume=/sys/fs/cgroup:/hostfs/sys/fs/cgroup:ro --volume=/:/hostfs:ro --volume=/var/run/docker.sock:/var/run/docker.sock --network=host --network=metricbeatSDN --env HOST=elasticsearch --env PORT=9200 --env PROTOCOL=http --env USERNAME=elastic --env PASSWORD=changeme quay.io/shazchaudhry/docker-metricbeat:${VERSION}  metricbeat -e -system.hostfs=/hostfs
+  - docker container run -d --rm --name metricbeat --volume metricbeat_data:/usr/share/metricbeat/data --volume=/proc:/hostfs/proc:ro --volume=/sys/fs/cgroup:/hostfs/sys/fs/cgroup:ro --volume=/:/hostfs:ro --volume=/var/run/docker.sock:/var/run/docker.sock --network=host --network=metricbeatSDN --env USERNAME=elastic --env PASSWORD=MagicWord quay.io/shazchaudhry/docker-metricbeat:${VERSION}  metricbeat -e -system.hostfs=/hostfs -E "output.elasticsearch.hosts=["http://elasticsearch:9200"]"
   - docker network inspect metricbeatSDN
   - docker image ls
   - sleep 60

@@ -7,6 +7,16 @@ metricbeat.modules:
   enabled: true
   processes: ['.*']
 
+  # Configure the metric types that are included by these metricsets.
+  cpu.metrics:  ["percentages"]  # The other available options are normalized_percentages and ticks.
+  core.metrics: ["percentages"]  # The other available option is ticks.
+
+  # Enable collection of cgroup metrics from processes on Linux.
+  process.cgroups.enabled: true
+
+  # Include the cumulative CPU tick values with the process metrics. Defaults to false.
+  process.include_cpu_ticks: true
+
 #------------------------------- Docker Module -------------------------------
 - module: docker
   metricsets: ["container", "cpu", "diskio", "healthcheck", "image", "info", "memory", "network"]
@@ -14,10 +24,26 @@ metricbeat.modules:
   enabled: true
   period: 10s
 
+#---------------------------- Elasticsearch Module ---------------------------
+- module: elasticsearch
+  metricsets: ["node", "node_stats"]
+  period: 10s
+  hosts: ["localhost:9200"]
+
+#-------------------------------- Kafka Module -------------------------------
+- module: kafka
+  metricsets: ["partition"]
+  period: 10s
+  hosts: ["localhost:9092"]
+
+#------------------------------- Kibana Module -------------------------------
+- module: kibana
+  metricsets: ["status"]
+  period: 10s
+  hosts: ["localhost:5601"]
+
 #-------------------------- Elasticsearch output ------------------------------
 output.elasticsearch:
-  hosts: ["${HOST}:${PORT}"]
-  protocol: "${PROTOCOL}"
   username: "${USERNAME}"
   password: "${PASSWORD}"
 
