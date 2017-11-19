@@ -10,6 +10,8 @@ The Beats are open source data shippers that you install as agents on your serve
   <img src="./pics/beats-platform.png" alt="Beats platform" style="width: 250px;"/>
 </p>
 
+In this repository, the intended use case for Metricbeat is to push logs directly Elasticsearch
+
 #### Prerequisite
 * Elastic stack v6.0 is up and running
 * Elasticsearch port 9200 is open for metricbeat to send logs to
