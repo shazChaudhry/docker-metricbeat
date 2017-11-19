@@ -7,7 +7,7 @@ As a member of DevOps team, I want to collect and ship metrics to Elasticsearch 
 The Beats are open source data shippers that you install as agents on your servers to send different types of operational data to Elasticsearch. Beats can send data directly to Elasticsearch or send it to Elasticsearch via Logstash, which you can use to parse and transform the data.
 
 <p align="center">
-  <img src="./pics\beats-platform.png" alt="Beats platform" style="width: 250px;"/>
+  <img src="./pics/beats-platform.png" alt="Beats platform" style="width: 250px;"/>
 </p>
 
 #### Prerequisite
@@ -29,23 +29,21 @@ docker image build \
 Start the container that will forward metricbeat stats to Elasticsearch:
 ```
 docker container run -d --rm \
-  --name metricbeat \
-  --volume metricbeat_data:/usr/share/metricbeat/data \
-  --volume=/proc:/hostfs/proc:ro \
-  --volume=/sys/fs/cgroup:/hostfs/sys/fs/cgroup:ro \
-  --volume=/:/hostfs:ro \
-  --volume=/var/run/docker.sock:/var/run/docker.sock \
-  --network=host \
-  --env USERNAME=elastic \
-  --env PASSWORD=MagicWord \
-quay.io/shazchaudhry/docker-metricbeat:6.0.0 metricbeat -e -system.hostfs=/hostfs -E "output.elasticsearch.hosts=["http://localhost:9200"]"
+--name metricbeat \
+--volume=/proc:/hostfs/proc:ro \
+--volume=/sys/fs/cgroup:/hostfs/sys/fs/cgroup:ro \
+--volume=/:/hostfs:ro \
+--volume=/var/run/docker.sock:/var/run/docker.sock \
+--volume metricbeat_data:/usr/share/metricbeat/data \
+--network=host \
+quay.io/shazchaudhry/docker-metricbeat:6.0.0 metricbeat -e -system.hostfs=/hostfs
 ```
 
 #### Test
 * Running the following command should produce elasticsearch index and one of the rows should have _metricbeat-*_:
 ```
-curl -XGET -u elastic:MagicWord 'localhost:9200/_cat/indices?v&pretty'
-curl -XGET -u elastic:MagicWord 'localhost:9200/metricbeat-*/_search?pretty'
+curl -XGET -u elastic:changeme 'localhost:9200/_cat/indices?v&pretty'
+curl -XGET -u elastic:changeme 'localhost:9200/metricbeat-*/_search?pretty'
 ```
 * If not already available in Kibana, create an index called "metricmeat-*".
 
